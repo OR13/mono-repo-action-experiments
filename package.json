@@ -2,7 +2,6 @@
   "name": "root",
   "private": true,
   "scripts": {
-    "postinstall": "lerna bootstrap --no-ci",
     "shove": "git add -A; git commit -m 'chore(ci): testing :rocket:'; git push origin main",
     "lint": "lerna run lint",
     "lint:fix": "lerna run lint:fix",

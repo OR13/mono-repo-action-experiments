@@ -18,14 +18,33 @@ jobs:
           node-version: ${{ matrix.node-version }}
           check-latest: true
 
+      - name: Store node version variable
+        id: node
+        run: |
+          echo "::set-output name=version::$(node -v)"
+
+      - name: Cache root node_modules
+        uses: actions/cache@v2
+        id: root_node_modules
+        with:
+          path: node_modules
+          key: ${{ runner.os }}-node_modules-${{ hashFiles('package.json') }}-${{ steps.node.outputs.version }}
+
       - name: Install
         run: npm i
+        if: ${{ steps.root_node_modules.outputs.cache-hit != 'true' }}
 
-      - uses: actions/cache@v2
-        id: restore-build
+      - name: Bootstrap
+        run: npx lerna bootstrap --no-ci
+
+      - name: Cache package a node_modules
+        uses: actions/cache@v2
+        id: a_node_modules
         with:
-          path: ./*
-          key: ${{ github.sha }}
+          path: ./packages/a/node_modules
+          key: ${{ runner.os }}-node_modules-${{ hashFiles('./packages/a/package.json') }}-${{ steps.node.outputs.version }}
+
+      
   lint:
     concurrency: lint
     needs:
@@ -38,11 +57,20 @@ jobs:
         uses: actions/setup-node@v2
         with:
           node-version: 16
-      - uses: actions/cache@v2
-        id: restore-build
+
+      - name: Load root node_modules cache
+        uses: actions/cache@v2
+        id: root_node_modules
         with:
-          path: ./*
-          key: ${{ github.sha }}
+          path: node_modules
+          key: ${{ runner.os }}-node_modules-${{ hashFiles('package.json') }}-${{ steps.node.outputs.version }}
+
+      - name: Load package a node_modules
+        uses: actions/cache@v2
+        id: a_node_modules
+        with:
+          path: ./packages/a/node_modules
+          key: ${{ runner.os }}-node_modules-${{ hashFiles('./packages/a/package.json') }}-${{ steps.node.outputs.version }}
 
       - name: Lint
         run: npm run lint
@@ -64,11 +92,20 @@ jobs:
         with:
           node-version: ${{ matrix.node-version }}
           check-latest: true
-      - uses: actions/cache@v2
-        id: restore-build
+
+      - name: Load root node_modules cache
+        uses: actions/cache@v2
+        id: root_node_modules
         with:
-          path: ./*
-          key: ${{ github.sha }}
+          path: node_modules
+          key: ${{ runner.os }}-node_modules-${{ hashFiles('package.json') }}-${{ steps.node.outputs.version }}
+
+      - name: Load package a node_modules
+        uses: actions/cache@v2
+        id: a_node_modules
+        with:
+          path: ./packages/a/node_modules
+          key: ${{ runner.os }}-node_modules-${{ hashFiles('./packages/a/package.json') }}-${{ steps.node.outputs.version }}
 
       - name: Test
         run: npm run test
