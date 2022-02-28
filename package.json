@@ -5,6 +5,7 @@
     "postinstall": "lerna bootstrap",
     "shove": "git add -A; git commit -m 'chore(ci): testing :rocket:'; git push origin main",
     "lint": "lerna run lint",
+    "lint:fix": "lerna run lint:fix",
     "test": "lerna run test"
   },
   "devDependencies": {
