@@ -1,5 +1,6 @@
 const add = (a, b) => {
-  console.log("hey");
+  // eslint-disable-next-line no-console
+  console.log('hey');
   return a + b;
 };
 

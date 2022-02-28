@@ -9,10 +9,9 @@
   },
   "author": "Orie Steele",
   "license": "ISC",
-  "dependencies": {
-    "jest": "^27.5.1"
-  },
+  "dependencies": {},
   "devDependencies": {
+    "jest": "^27.5.1",
     "eslint": "^8.10.0",
     "eslint-config-airbnb-base": "^15.0.0",
     "eslint-plugin-import": "^2.25.4"
