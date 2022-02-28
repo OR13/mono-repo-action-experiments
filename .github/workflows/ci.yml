@@ -4,34 +4,7 @@ on: [pull_request]
 
 jobs:
   build:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Begin CI...
-        uses: actions/checkout@v2
-      - name: Use Node 16
-        uses: actions/setup-node@v1
-        with:
-          node-version: 16.x
-
-      - name: Install
-        run: npm i
-
-  lint:
-    needs:
-      - build
-    runs-on: ubuntu-latest
-    steps:
-      - name: Begin CI...
-        uses: actions/checkout@v2
-      - name: Lint
-        run: npm run lint
-
-  test:
-    needs:
-      - lint
-    continue-on-error: ${{ matrix.experimental || false }}
     strategy:
-      fail-fast: false
       matrix:
         node-version:
           - 16
@@ -47,6 +20,9 @@ jobs:
         with:
           node-version: ${{ matrix.node-version }}
           check-latest: true
+
+      - name: Install
+        run: npm i
 
       - name: Test
         run: npm run test
