@@ -23,6 +23,12 @@ jobs:
 
       - name: Lint
         run: npm run lint
+
+      - uses: actions/cache@v2
+        id: restore-build
+        with:
+          path: ./*
+          key: ${{ github.sha }}
   test:
     needs:
         - build
@@ -39,6 +45,11 @@ jobs:
         with:
           node-version: ${{ matrix.node-version }}
           check-latest: true
+      - uses: actions/cache@v2
+        id: restore-build
+        with:
+          path: ./*
+          key: ${{ github.sha }}
 
       - name: Test
         run: npm run test
