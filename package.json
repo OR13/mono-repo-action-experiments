@@ -1,6 +1,9 @@
 {
   "name": "root",
   "private": true,
+  "scripts": {
+    "shove": "git add -A; git commit -m 'chore(ci): testing :rocket:'; git push origin main"
+  },
   "devDependencies": {
     "lerna": "^3.22.1"
   }
