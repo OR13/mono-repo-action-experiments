@@ -8,9 +8,6 @@ jobs:
       matrix:
         node-version:
           - 16
-        include:
-          - experimental: true
-            node-version: ">=17"
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
