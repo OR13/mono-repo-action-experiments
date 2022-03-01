@@ -37,12 +37,19 @@ jobs:
       - name: Bootstrap
         run: npx lerna bootstrap --no-ci
 
-      - name: Cache node_modules
+      - name: Cache package a node_modules
         uses: actions/cache@v2
-        id: package_node_modules
+        id: a_node_modules
         with:
-          path: "**/node_modules"
-          key: ${{ runner.os }}-node_modules-${{ hashFiles('**/package.json') }}-${{ steps.node.outputs.version }}
+          path: ./packages/a/node_modules
+          key: ${{ runner.os }}-node_modules-${{ hashFiles('./packages/a/package.json') }}-${{ steps.node.outputs.version }}
+    
+      - name: Cache package a node_modules
+        uses: actions/cache@v2
+        id: b_node_modules
+        with:
+          path: ./packages/b/node_modules
+          key: ${{ runner.os }}-node_modules-${{ hashFiles('./packages/b/package.json') }}-${{ steps.node.outputs.version }}
 
       
   lint:
@@ -58,16 +65,26 @@ jobs:
         with:
           node-version: 16
     
-      - name: Load cached node_modules
+      - name: Load root node_modules cache
         uses: actions/cache@v2
-        id: package_node_modules
+        id: root_node_modules
         with:
-          path: "**/node_modules"
-          key: ${{ runner.os }}-node_modules-${{ hashFiles('**/package.json') }}-${{ steps.node.outputs.version }}
+          path: node_modules
+          key: ${{ runner.os }}-node_modules-${{ hashFiles('package.json') }}-${{ steps.node.outputs.version }}
 
-      #  the caching above does not work, but bootstraping again does work... the cache is not working for packages.
-      # - name: Lerna bootstrap
-      #   run: npx lerna bootstrap
+      - name: Load package a node_modules
+        uses: actions/cache@v2
+        id: a_node_modules
+        with:
+          path: ./packages/a/node_modules
+          key: ${{ runner.os }}-node_modules-${{ hashFiles('./packages/a/package.json') }}-${{ steps.node.outputs.version }}
+      
+      - name: Load package b node_modules
+        uses: actions/cache@v2
+        id: b_node_modules
+        with:
+          path: ./packages/b/node_modules
+          key: ${{ runner.os }}-node_modules-${{ hashFiles('./packages/b/package.json') }}-${{ steps.node.outputs.version }}
 
       - name: Lint
         run: npm run lint
@@ -102,12 +119,12 @@ jobs:
   #         path: node_modules
   #         key: ${{ runner.os }}-node_modules-${{ hashFiles('package.json') }}-${{ steps.node.outputs.version }}
 
-  #     - name: Load package node_modules
+  #     - name: Load package a node_modules
   #       uses: actions/cache@v2
-  #       id: package_node_modules
+  #       id: a_node_modules
   #       with:
-  #         path: ./packages/*/node_modules
-  #         key: ${{ runner.os }}-node_modules-${{ hashFiles('./packages/*/package.json') }}-${{ steps.node.outputs.version }}
+  #         path: ./packages/a/node_modules
+  #         key: ${{ runner.os }}-node_modules-${{ hashFiles('./packages/a/package.json') }}-${{ steps.node.outputs.version }}
 
   #     - name: Test
   #       run: npm run test
