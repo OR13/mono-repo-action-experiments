@@ -72,79 +72,82 @@ jobs:
           path: ./packages/*/node_modules
           key: ${{ runner.os }}-node_modules-${{ hashFiles('./packages/*/package.json') }}-${{ steps.node.outputs.version }}
 
+      - name: Lerna link
+        run: npx lerna link
+
       - name: Lint
         run: npm run lint
 
-  test:
-    concurrency: test
-    needs:
-        - build
-    strategy:
-      matrix:
-        node-version:
-          - 16
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v2
-      - name: Setup node
-        uses: actions/setup-node@v2
-        with:
-          node-version: ${{ matrix.node-version }}
-          check-latest: true
+  # test:
+  #   concurrency: test
+  #   needs:
+  #       - build
+  #   strategy:
+  #     matrix:
+  #       node-version:
+  #         - 16
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - name: Checkout
+  #       uses: actions/checkout@v2
+  #     - name: Setup node
+  #       uses: actions/setup-node@v2
+  #       with:
+  #         node-version: ${{ matrix.node-version }}
+  #         check-latest: true
 
-      - name: Store node version variable
-        id: node
-        run: |
-          echo "::set-output name=version::$(node -v)"
+  #     - name: Store node version variable
+  #       id: node
+  #       run: |
+  #         echo "::set-output name=version::$(node -v)"
 
-      - name: Load root node_modules cache
-        uses: actions/cache@v2
-        id: root_node_modules
-        with:
-          path: node_modules
-          key: ${{ runner.os }}-node_modules-${{ hashFiles('package.json') }}-${{ steps.node.outputs.version }}
+  #     - name: Load root node_modules cache
+  #       uses: actions/cache@v2
+  #       id: root_node_modules
+  #       with:
+  #         path: node_modules
+  #         key: ${{ runner.os }}-node_modules-${{ hashFiles('package.json') }}-${{ steps.node.outputs.version }}
 
-      - name: Load package node_modules
-        uses: actions/cache@v2
-        id: package_node_modules
-        with:
-          path: ./packages/*/node_modules
-          key: ${{ runner.os }}-node_modules-${{ hashFiles('./packages/*/package.json') }}-${{ steps.node.outputs.version }}
+  #     - name: Load package node_modules
+  #       uses: actions/cache@v2
+  #       id: package_node_modules
+  #       with:
+  #         path: ./packages/*/node_modules
+  #         key: ${{ runner.os }}-node_modules-${{ hashFiles('./packages/*/package.json') }}-${{ steps.node.outputs.version }}
 
-      - name: Test
-        run: npm run test
+  #     - name: Test
+  #       run: npm run test
 
-      - name: Cache test suite report
-        uses: actions/cache@v2
-        id: a_test_report
-        with:
-          path: ./packages/a/reports
-          key: ${{ runner.os }}-a_test_report-${{ hashFiles('./packages/a/package.json') }}-${{ steps.node.outputs.version }}
+  #     - name: Cache test suite report
+  #       uses: actions/cache@v2
+  #       id: a_test_report
+  #       with:
+  #         path: ./packages/a/reports
+  #         key: ${{ runner.os }}-a_test_report-${{ hashFiles('./packages/a/package.json') }}-${{ steps.node.outputs.version }}
 
-  report:
-    concurrency: report
-    needs:
-        - test
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v2
-      - name: Setup node
-        uses: actions/setup-node@v2
-        with:
-          node-version: 16
+  # report:
+  #   concurrency: report
+  #   needs:
+  #       - test
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - name: Checkout
+  #       uses: actions/checkout@v2
+  #     - name: Setup node
+  #       uses: actions/setup-node@v2
+  #       with:
+  #         node-version: 16
 
-      - name: Cache test suite report
-        uses: actions/cache@v2
-        id: a_test_report
-        with:
-          path: ./packages/a/reports
-          key: ${{ runner.os }}-a_test_report-${{ hashFiles('./packages/a/package.json') }}-${{ steps.node.outputs.version }}
+  #     - name: Cache test suite report
+  #       uses: actions/cache@v2
+  #       id: a_test_report
+  #       with:
+  #         path: ./packages/a/reports
+  #         key: ${{ runner.os }}-a_test_report-${{ hashFiles('./packages/a/package.json') }}-${{ steps.node.outputs.version }}
 
-      - name: Deploy Report
-        uses: peaceiris/actions-gh-pages@v3
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./packages/a/reports
+  #     - name: Deploy Report
+  #       uses: peaceiris/actions-gh-pages@v3
+  #       with:
+  #         github_token: ${{ secrets.GITHUB_TOKEN }}
+  #         publish_dir: ./packages/a/reports
 
