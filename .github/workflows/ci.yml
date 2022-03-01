@@ -72,8 +72,8 @@ jobs:
           path: ./packages/*/node_modules
           key: ${{ runner.os }}-node_modules-${{ hashFiles('./packages/*/package.json') }}-${{ steps.node.outputs.version }}
 
-      - name: Lerna link
-        run: npx lerna link
+      - name: Lerna bootstrap
+        run: npx lerna bootstrap
 
       - name: Lint
         run: npm run lint
