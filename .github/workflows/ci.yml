@@ -18,13 +18,12 @@ jobs:
           node-version: ${{ matrix.node-version }}
           check-latest: true
 
-      - name: Set yarn cache directory
-        run: echo "::set-env name=YARN_CACHE::$(yarn cache dir)"
       - name: Cache node modules
         id: lerna-yarn-cache
         uses: actions/cache@v2
         env:
             cache-name: cache-node-modules
+            YARN_CACHE: $(yarn cache dir)
         with:
             path: |
                 ${{ env.YARN_CACHE }}
@@ -58,6 +57,7 @@ jobs:
         uses: actions/cache@v2
         env:
             cache-name: cache-node-modules
+            YARN_CACHE: $(yarn cache dir)
         with:
             path: |
                 ${{ env.YARN_CACHE }}
