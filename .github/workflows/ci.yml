@@ -24,19 +24,13 @@ jobs:
       - name: Bootstrap
         run: npx lerna bootstrap --no-ci
 
-      - name: Cache root node_modules
-        uses: actions/cache@v2
-        id: root_node_modules
-        with:
-          path: node_modules
-          key: ${{ github.sha }}
-
       - name: Cache node modules
-        id: package_node_modules
+        id: cache_node_modules
         uses: actions/cache@v2
         with:
           path: |
-            ./*
+            node_modules
+            */*/node_modules
           key: ${{ github.sha }}
 
   lint:
@@ -53,19 +47,13 @@ jobs:
         with:
           node-version: 16
 
-      - name: Cache root node_modules
-        uses: actions/cache@v2
-        id: root_node_modules
-        with:
-          path: node_modules
-          key: ${{ github.sha }}
-
-      - name: Cache node modules
-        id: package_node_modules
+      - name: Restore node modules
+        id: restore_node_modules
         uses: actions/cache@v2
         with:
           path: |
-            ./*
+            node_modules
+            */*/node_modules
           key: ${{ github.sha }}
 
       - name: Lint
