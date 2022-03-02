@@ -37,13 +37,12 @@ jobs:
             cache-name: cache-node-modules
         with:
           path: |
-              node_modules
-              */*/node_modules
+            ./*
           key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/package-lock.json') }}-${{ steps.node.outputs.version }}
           restore-keys: |
-              ${{ runner.os }}-build-${{ env.cache-name }}-
-              ${{ runner.os }}-build-
-              ${{ runner.os }}-
+            ${{ runner.os }}-build-${{ env.cache-name }}-
+            ${{ runner.os }}-build-
+            ${{ runner.os }}-
       
 
       - name: Install
@@ -80,13 +79,12 @@ jobs:
             cache-name: cache-node-modules
         with:
           path: |
-              node_modules
-              */*/node_modules
+            ./*
           key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/package-lock.json') }}-${{ steps.node.outputs.version }}
           restore-keys: |
-              ${{ runner.os }}-build-${{ env.cache-name }}-
-              ${{ runner.os }}-build-
-              ${{ runner.os }}-
+            ${{ runner.os }}-build-${{ env.cache-name }}-
+            ${{ runner.os }}-build-
+            ${{ runner.os }}-
 
       - name: Lint
         run: npm run lint
