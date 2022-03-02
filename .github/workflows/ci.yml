@@ -47,10 +47,7 @@ jobs:
                 node_modules
                 */*/node_modules
             key: ${{ github.sha }}
-            restore-keys: |
-                ${{ runner.os }}-build-${{ env.cache-name }}-
-                ${{ runner.os }}-build-
-                ${{ runner.os }}-
+
       
   lint:
     concurrency: lint
@@ -75,10 +72,6 @@ jobs:
                 node_modules
                 */*/node_modules
             key: ${{ github.sha }}
-            restore-keys: |
-                ${{ runner.os }}-build-${{ env.cache-name }}-
-                ${{ runner.os }}-build-
-                ${{ runner.os }}-
 
       - name: Lint
         run: npm run lint
