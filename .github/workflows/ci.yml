@@ -18,36 +18,15 @@ jobs:
           node-version: ${{ matrix.node-version }}
           check-latest: true
 
-      - name: Cache node modules
-        id: lerna-yarn-cache
-        uses: actions/cache@v2
-        env:
-            cache-name: cache-node-modules
-            YARN_CACHE: $(yarn cache dir)
+      - name: Install
+        run: npm i
+      
+      - uses: actions/cache@v2
+        id: cache-build
         with:
-            path: |
-                ${{ env.YARN_CACHE }}
-                node_modules
-                */*/node_modules
-            key: ${{ github.sha }}
-            
-      - name: Install dependencies if needed.
-        if: steps.lerna-yarn-cache.outputs.cache-hit != 'true'
-        run: yarn install --ignore-platform --frozen-lockfile
-
-      - name: Cache node modules
-        id: lerna-yarn-cache2
-        uses: actions/cache@v2
-        env:
-            cache-name: cache-node-modules
-            YARN_CACHE: $(yarn cache dir)
-        with:
-            path: |
-                ${{ env.YARN_CACHE }}
-                node_modules
-                */*/node_modules
-            key: ${{ github.sha }}
-
+          path: ./*
+          key: ${{ github.sha }}
+          
   lint:
     concurrency: lint
     needs:
@@ -61,19 +40,12 @@ jobs:
         uses: actions/setup-node@v2
         with:
           node-version: 16
-
-      - name: Restore node modules
-        id: lerna-yarn-cache-restore
-        uses: actions/cache@v2
-        env:
-            cache-name: cache-node-modules
-            YARN_CACHE: $(yarn cache dir)
+      
+      - uses: actions/cache@v2
+        id: cache-restore
         with:
-            path: |
-                ${{ env.YARN_CACHE }}
-                node_modules
-                */*/node_modules
-            key: ${{ github.sha }}
+          path: ./*
+          key: ${{ github.sha }}
 
       - name: Lint
         run: npm run lint
