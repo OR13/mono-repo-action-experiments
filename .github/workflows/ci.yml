@@ -37,12 +37,20 @@ jobs:
       - name: Bootstrap
         run: npx lerna bootstrap --no-ci
 
-      - name: Cache all
+      - name: Cache node modules
+        id: lerna-yarn-cache
         uses: actions/cache@v2
-        id: node_modules
+        env:
+            cache-name: cache-node-modules
         with:
-          path: ./*
-          key: ${{ github.sha }}
+            path: |
+                node_modules
+                */*/node_modules
+            key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/package-lock.json') }}
+            restore-keys: |
+                ${{ runner.os }}-build-${{ env.cache-name }}-
+                ${{ runner.os }}-build-
+                ${{ runner.os }}-
       
   lint:
     concurrency: lint
@@ -57,12 +65,20 @@ jobs:
         with:
           node-version: 16
     
-      - name: Load all
+      - name: Cache node modules
+        id: lerna-yarn-cache
         uses: actions/cache@v2
-        id: node_modules
+        env:
+            cache-name: cache-node-modules
         with:
-          path: ./*
-          key: ${{ github.sha }}
+            path: |
+                node_modules
+                */*/node_modules
+            key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/package-lock.json') }}
+            restore-keys: |
+                ${{ runner.os }}-build-${{ env.cache-name }}-
+                ${{ runner.os }}-build-
+                ${{ runner.os }}-
 
       - name: Lint
         run: npm run lint
