@@ -51,6 +51,7 @@ jobs:
         if: steps.lerna-yarn-cache.outputs.cache-hit != 'true'
 
       - name: Bootstrap
+        run: npx lerna bootstrap --no-ci
         if: steps.lerna-yarn-cache.outputs.cache-hit != 'true'
 
       
