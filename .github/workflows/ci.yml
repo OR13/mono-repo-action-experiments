@@ -42,7 +42,7 @@ jobs:
         id: node_modules
         with:
           path: ./*
-          key: ${{ runner.os }}-node_modules-${{ hashFiles('**/package.json') }}-${{ steps.node.outputs.version }}
+          key: ${{ github.sha }}
       
   lint:
     concurrency: lint
@@ -62,7 +62,7 @@ jobs:
         id: node_modules
         with:
           path: ./*
-          key: ${{ runner.os }}-node_modules-${{ hashFiles('**/package.json') }}-${{ steps.node.outputs.version }}
+          key: ${{ github.sha }}
 
       - name: Lint
         run: npm run lint
