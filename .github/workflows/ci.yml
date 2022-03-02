@@ -39,11 +39,10 @@ jobs:
             ./*
           key: ${{ github.sha }}
 
-      
   lint:
     concurrency: lint
     needs:
-        - build
+      - build
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
