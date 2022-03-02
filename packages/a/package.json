@@ -8,6 +8,9 @@
     "lint:fix": "eslint src --fix",
     "test": "jest"
   },
+  "engines": {
+    "node": ">=10"
+  },
   "author": "Orie Steele",
   "license": "ISC",
   "dependencies": {

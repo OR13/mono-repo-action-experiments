@@ -2,6 +2,7 @@
   "name": "root",
   "private": true,
   "scripts": {
+    "postinstall": "lerna bootstrap --no-ci",
     "shove": "git add -A; git commit -m 'chore(ci): testing :rocket:'; git push origin main",
     "lint": "lerna run lint",
     "lint:fix": "lerna run lint:fix",
@@ -9,5 +10,10 @@
   },
   "devDependencies": {
     "lerna": "^4.0.0"
-  }
+  },
+  "version": "1.0.0",
+  "main": "index.js",
+  "repository": "git@github.com:OR13/mono-repo-action-experiments.git",
+  "author": "Orie Steele <orie@transmute.industries>",
+  "license": "MIT"
 }

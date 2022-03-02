@@ -18,20 +18,26 @@ jobs:
           node-version: ${{ matrix.node-version }}
           check-latest: true
 
-      - name: Install
-        run: npm i
-
-      - name: Bootstrap
-        run: npx lerna bootstrap --no-ci
-
+      - name: Set yarn cache directory
+        run: echo "::set-env name=YARN_CACHE::$(yarn cache dir)"
       - name: Cache node modules
-        id: cache_node_modules
+        id: lerna-yarn-cache
         uses: actions/cache@v2
+        env:
+            cache-name: cache-node-modules
         with:
-          path: |
-            node_modules
-            */*/node_modules
-          key: ${{ github.sha }}
+            path: |
+                ${{ env.YARN_CACHE }}
+                node_modules
+                */*/node_modules
+            key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/yarn.lock') }}
+            restore-keys: |
+                ${{ runner.os }}-build-${{ env.cache-name }}-
+                ${{ runner.os }}-build-
+                ${{ runner.os }}-
+      - name: Install dependencies if needed.
+        if: steps.lerna-yarn-cache.outputs.cache-hit != 'true'
+        run: yarn install --ignore-platform --frozen-lockfile
 
   lint:
     concurrency: lint
@@ -48,13 +54,20 @@ jobs:
           node-version: 16
 
       - name: Restore node modules
-        id: restore_node_modules
+        id: lerna-yarn-cache
         uses: actions/cache@v2
+        env:
+            cache-name: cache-node-modules
         with:
-          path: |
-            node_modules
-            */*/node_modules
-          key: ${{ github.sha }}
+            path: |
+                ${{ env.YARN_CACHE }}
+                node_modules
+                */*/node_modules
+            key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/yarn.lock') }}
+            restore-keys: |
+                ${{ runner.os }}-build-${{ env.cache-name }}-
+                ${{ runner.os }}-build-
+                ${{ runner.os }}-
 
       - name: Lint
         run: npm run lint
