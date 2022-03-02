@@ -46,7 +46,7 @@ jobs:
             path: |
                 node_modules
                 */*/node_modules
-            key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/package-lock.json') }}
+            key: ${{ github.sha }}
             restore-keys: |
                 ${{ runner.os }}-build-${{ env.cache-name }}-
                 ${{ runner.os }}-build-
@@ -74,7 +74,7 @@ jobs:
             path: |
                 node_modules
                 */*/node_modules
-            key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/package-lock.json') }}
+            key: ${{ github.sha }}
             restore-keys: |
                 ${{ runner.os }}-build-${{ env.cache-name }}-
                 ${{ runner.os }}-build-
