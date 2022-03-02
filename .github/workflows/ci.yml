@@ -30,13 +30,6 @@ jobs:
           path: node_modules
           key: ${{ runner.os }}-node_modules-${{ hashFiles('package.json') }}-${{ steps.node.outputs.version }}
 
-      - name: Install
-        run: npm i
-        if: ${{ steps.root_node_modules.outputs.cache-hit != 'true' }}
-
-      - name: Bootstrap
-        run: npx lerna bootstrap --no-ci
-
       - name: Cache node modules
         id: lerna-yarn-cache
         uses: actions/cache@v2
@@ -44,12 +37,21 @@ jobs:
             cache-name: cache-node-modules
         with:
           path: |
-              ./*
-          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/package-lock.json') }}
+              node_modules
+              */*/node_modules
+          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/package-lock.json') }}-${{ steps.node.outputs.version }}
           restore-keys: |
               ${{ runner.os }}-build-${{ env.cache-name }}-
               ${{ runner.os }}-build-
               ${{ runner.os }}-
+      
+
+      - name: Install
+        run: npm i
+        if: steps.lerna-yarn-cache.outputs.cache-hit != 'true'
+
+      - name: Bootstrap
+        if: steps.lerna-yarn-cache.outputs.cache-hit != 'true'
 
       
   lint:
@@ -64,6 +66,11 @@ jobs:
         uses: actions/setup-node@v2
         with:
           node-version: 16
+
+      - name: Store node version variable
+        id: node
+        run: |
+          echo "::set-output name=version::$(node -v)"
     
       - name: Cache node modules
         id: lerna-yarn-cache
@@ -72,8 +79,9 @@ jobs:
             cache-name: cache-node-modules
         with:
           path: |
-              ./*
-          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/package-lock.json') }}
+              node_modules
+              */*/node_modules
+          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/package-lock.json') }}-${{ steps.node.outputs.version }}
           restore-keys: |
               ${{ runner.os }}-build-${{ env.cache-name }}-
               ${{ runner.os }}-build-
