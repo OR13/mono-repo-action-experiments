@@ -43,9 +43,13 @@ jobs:
         env:
             cache-name: cache-node-modules
         with:
-            path: |
-                ./*
-            key: ${{ github.sha }}
+          path: |
+              ./*
+          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+              ${{ runner.os }}-build-${{ env.cache-name }}-
+              ${{ runner.os }}-build-
+              ${{ runner.os }}-
 
       
   lint:
@@ -67,9 +71,13 @@ jobs:
         env:
             cache-name: cache-node-modules
         with:
-            path: |
-                ./*
-            key: ${{ github.sha }}
+          path: |
+              ./*
+          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+              ${{ runner.os }}-build-${{ env.cache-name }}-
+              ${{ runner.os }}-build-
+              ${{ runner.os }}-
 
       - name: Lint
         run: npm run lint
